@@ -1,4 +1,5 @@
 import Usuario from "../model/usuarioModel.js";
+import createUserToken from "../helpers/createToken.js";
 
 export const login = async (req, res) => {
     const {email, senha} = req.body;
@@ -10,7 +11,8 @@ export const login = async (req, res) => {
         if(usuario.senha !== senha){
             return res.status(403).json({message: "Senha não condiz"})
         }
-        res.status(200).json(usuario);
+        const token = createUserToken(usuario, req, res);
+        res.status(200).json(token);
     }catch(error){
         res.status(500).json({error})
         console.log(error);
