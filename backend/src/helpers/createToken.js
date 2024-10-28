@@ -6,7 +6,10 @@ const createUserToken = async (user, req, res) => {
             nome: user.nome,
             id: user.id
         },
-        "SENH4HYPERMEGASAFEST"
+        "SENH4HYPERMEGASAFEST",
+        {
+            expiresIn: '12h'
+        }
     )
 
     res.status(200).json({

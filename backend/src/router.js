@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { login, register, showData } from "./controllers/controllerUsuario.js";
+import { login, logout, register, showData } from "./controllers/controllerUsuario.js";
 import {registrarEmpresa, getEmpresa} from './controllers/controllerEmpresa.js';
 import {criarPublicacao, listPosts, showOne} from './controllers/controllerPublicacao.js';
 import verifyToken from './helpers/verifyToken.js';
@@ -10,7 +10,8 @@ const router = Router();
 //Rotas Usuarios
 router.post('/usuarios/registrar', register);
 router.post('/usuarios/login/', login);
-router.get('/usuarios/mostrar/:id', showData);
+router.get('/usuarios/mostrar', verifyToken, showData);
+router.post('/usuarios/logout', logout)
 
 //Rotas Empresas
 router.post('/empresas/registrar', registrarEmpresa);
