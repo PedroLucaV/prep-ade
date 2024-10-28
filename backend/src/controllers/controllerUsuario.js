@@ -42,11 +42,12 @@ export const register = async (req, res) => {
 }
 
 export const showData = async (req, res) => {
-    const {id} = req.params;
-
     try{
-        const user = await Usuario.findByPk(id);
-        if(!user){
+        const token = getToken(req);
+        const user = await getUserByToken(token);
+        const userId = user.dataValues.id;
+        const usuario = await Usuario.findByPk(userId);
+        if(!usuario){
             return res.status(403).json({message: "Não foi encontrado nenhum usu"})
         }
         res.status(200).json(user)
@@ -54,4 +55,8 @@ export const showData = async (req, res) => {
         res.status(500).json({error})
         console.log(error);
     }
+}
+
+export const logout = (req, res) => {
+    res.status(200).json({message: "Você saiu da aplicação"})
 }
