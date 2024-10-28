@@ -21,3 +21,14 @@ export const criarComentario = async (req, res) => {
         console.log(error);
     }
 }
+
+export const listarComentarios = async (req, res) => {
+    const post_id = req.params.id_postagem;
+    try {
+        const comments = await Comentario.findAll({where: {id_publicacao: post_id}});
+        res.status(200).json(comments)
+    } catch (error) {
+        res.status(500).json({ error })
+        console.log(error);
+    }
+}
