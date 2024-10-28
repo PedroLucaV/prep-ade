@@ -3,7 +3,7 @@ import { login, register, showData } from "./controllers/controllerUsuario.js";
 import {registrarEmpresa, getEmpresa} from './controllers/controllerEmpresa.js';
 import {criarPublicacao, listPosts} from './controllers/controllerPublicacao.js';
 import verifyToken from './helpers/verifyToken.js';
-import { criarComentario, listarComentarios } from "./controllers/controllerComments.js";
+import { criarComentario, listarComentarios, deletarCommentario } from "./controllers/controllerComments.js";
 
 const router = Router();
 
@@ -24,7 +24,7 @@ router.get('/postagem/listar/', listPosts);
 router.post('/postagem/comentar/:id_postagem', verifyToken, criarComentario);
 router.get('/postagem/comentarios/:id_postagem', listarComentarios);
 router.put('/comentarios/editar/:id');
-router.delete('/comentarios/deletar/:id');
+router.delete('/comentarios/deletar/:id', verifyToken, deletarCommentario);
 
 //Rotas Curtidas
 router.post('/postagem/avaliar/:id_postagem');
