@@ -1,4 +1,5 @@
 import { literal } from 'sequelize';
+import Comentario from '../model/comentarioModel.js';
 import Empresas from '../model/empresaModel.js';
 import Publicacao from '../model/publicacaoModel.js';
 
@@ -29,6 +30,30 @@ export const listPosts = async (req, res) => {
     ]});
         res.status(200).json(posts)
     }catch(error){
+        res.status(500).json({error})
+        console.log(error);
+    }
+}
+
+export const showOne = async (req, res) => {
+    const {id} = req.params
+    try {
+        if(!id){
+            return res.status(400).json({message: "O Id da publicação não pode ser vazio"})
+        }
+        const publicacao = await Publicacao.findByPk(id, {attributes: [
+            'id', 'titulo', 'imagem', 'local', 'cidade', 
+            [literal(`(SELECT COUNT(*) FROM curtidas WHERE curtidas.id_publicacao = "${id}" AND curtidas.tipo_avaliacao = "up")`), 'total likes'],
+            [literal(`(SELECT COUNT(*) FROM curtidas WHERE curtidas.id_publicacao = "${id}" AND curtidas.tipo_avaliacao = "down")`), 'total deslikes'],
+            [literal(`(SELECT COUNT(*) FROM comentarios WHERE comentarios.id_publicacao = "${id}")`), 'total comments']
+        ], raw: true});
+        const comentarios = await Comentario.findAll({where: {id_publicacao: id}, attributes: ['id', 'comentario', 'id_usuario', 
+            [literal(`(SELECT nome FROM usuarios WHERE usuarios.id = comentarios.id_usuario)`), 'nome_usuario']
+        ]})
+        publicacao.comentarios = comentarios
+        res.status(200).json(publicacao)
+
+    } catch (error) {
         res.status(500).json({error})
         console.log(error);
     }
